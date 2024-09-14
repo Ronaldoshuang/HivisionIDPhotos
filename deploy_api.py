@@ -10,11 +10,14 @@ from hivision.utils import add_background, resize_image_to_kb_base64, hex_to_rgb
 import base64
 import numpy as np
 import cv2
+from database.client import db
+from database.response import CRUD
+
 
 app = FastAPI()
 creator = IDCreator()
 
-
+collection = db['photos']
 # 将图像转换为Base64编码
 def numpy_2_base64(img: np.ndarray):
     retval, buffer = cv2.imencode(".png", img)
@@ -140,6 +143,48 @@ async def photo_add_background(
     return result_messgae
 
 
+# 透明图像添加纯色背景接口 传递图像是base64格式
+@app.post("/v1/add_background")
+async def v1_photo_add_background(
+    input_image_base64: str = Form(...),
+    color: str = Form(...),
+    kb: str = Form(None),
+    render: int = Form(0),
+):
+    render_choice = ["pure_color", "updown_gradient", "center_gradient"]
+    image_bytes = base64.b64decode(input_image_base64)
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
+
+    color = hex_to_rgb(color)
+    color = (color[2], color[1], color[0])
+
+    result_image = add_background(
+        img,
+        bgr=color,
+        mode=render_choice[render],
+    ).astype(np.uint8)
+
+    if kb:
+        result_image = cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR)
+        result_image_base64 = resize_image_to_kb_base64(result_image, int(kb))
+    else:
+        result_image_base64 = numpy_2_base64(result_image)
+
+    # try:
+    result_messgae = {
+        "status": True,
+        "image_base64": result_image_base64,
+    }
+
+    # except Exception as e:
+    #     print(e)
+    #     result_messgae = {
+    #         "status": False,
+    #         "error": e
+    #     }
+
+    return result_messgae
 # 六寸排版照生成接口
 @app.post("/generate_layout_photos")
 async def generate_layout_photos(
@@ -183,6 +228,27 @@ async def generate_layout_photos(
 
     return result_messgae
 
+@app.get("/list")
+async def test():
+
+    data = collection.find();
+
+    return CRUD(result=True, msg='请求成功', data=data)
+# 测试接口
+@app.get("/test")
+async def test():
+
+    result_messgae = {
+        "status": "123",
+        "image_base64": "123",
+    }
+
+    # except Exception as e:
+    #     result_messgae = {
+    #         "status": False,
+    #     }
+
+    return result_messgae
 
 if __name__ == "__main__":
     import uvicorn
