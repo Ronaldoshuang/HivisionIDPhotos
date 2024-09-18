@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, Form
+from fastapi import FastAPI, UploadFile, Form,Query
 from hivision import IDCreator
 from hivision.error import FaceError
 from hivision.creator.layout_calculator import (
@@ -12,7 +12,7 @@ import numpy as np
 import cv2
 from database.client import db
 from database.response import CRUD
-
+from bson.json_util import dumps
 
 app = FastAPI()
 creator = IDCreator()
@@ -228,12 +228,40 @@ async def generate_layout_photos(
 
     return result_messgae
 
-@app.get("/list")
-async def test():
+@app.get("/photo_size")
+async def test(name: str = Query(default=None, title='证件照名称'),category: int = Query(default=None, title='证件照类型')
+               ,recommend: int = Query(default=None, title='是否热门')):
+    condition = {}
+    if name is not None and name != '':
+        condition['name'] = {'$regex': name, '$options': 'i'}
+    if category is not None and category != '':
+        condition['category'] = category
+    if recommend is not None and recommend != '':
+        condition['recommend'] = recommend
 
-    data = collection.find();
+    preview_data_list = list(collection.find(condition).sort('id').limit(200))
 
-    return CRUD(result=True, msg='请求成功', data=data)
+    result_preview_data_list = []
+    for preview_data in preview_data_list:
+        result_preview_data = {
+            'id': str(preview_data['_id']),
+            'name': preview_data['name'],
+            'width': preview_data['width_mm'],
+            'height': preview_data['height_mm'],
+            'pix_width': preview_data['width_px'],
+            'pix_height': preview_data['height_px'],
+            'category': preview_data['category']
+        }
+        result_preview_data_list.append(result_preview_data)
+
+
+    return CRUD(status=True, msg='请求成功', data=result_preview_data_list)
+
+
+@app.get("/login")
+async def test(code: str = Query(default=None, title='微信code')):
+
+    return CRUD(status=True, msg='请求成功', data=code)
 # 测试接口
 @app.get("/test")
 async def test():

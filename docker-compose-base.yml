@@ -7,14 +7,12 @@ services:
     restart: always
     tty: true
     ports:
-      - "27019:27017"
+      - "27017:27017"
     environment:
-      - AUTH=yes
-      - ADMIN_USER=admin
-      - ADMIN_PASS=admin
-      - APPLICATION_DATABASE=phantom
-      - APPLICATION_DATABASE=phantom_admin
-      - APPLICATION_PASS=IAG123456
+      - MONGO_INITDB_ROOT_USERNAME=zjz_admin
+      - MONGO_INITDB_ROOT_PASSWORD=qs123456..
+      - MONGO_INITDB_DATABASE=zjz
     volumes:
-      - ./logs/mongodb/:/var/log/mongodb/
       - ./docker/mongodb/db:/data/db
+      - ./docker/mongodb/log:/data/logs
+      - ./docker/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
