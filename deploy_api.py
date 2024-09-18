@@ -13,11 +13,14 @@ import cv2
 from database.client import db
 from database.response import CRUD
 from bson.json_util import dumps
+from datetime import datetime
+from pymongo import ReturnDocument
 
 app = FastAPI()
 creator = IDCreator()
 
 collection = db['photos']
+collection_user = db['user']
 # 将图像转换为Base64编码
 def numpy_2_base64(img: np.ndarray):
     retval, buffer = cv2.imencode(".png", img)
@@ -260,8 +263,35 @@ async def test(name: str = Query(default=None, title='证件照名称'),category
 
 @app.get("/login")
 async def test(code: str = Query(default=None, title='微信code')):
+    # 当前时间
+    current_time = datetime.utcnow()
 
-    return CRUD(status=True, msg='请求成功', data=code)
+    # 尝试查找是否有相应的 code 并更新登录时间与登录次数
+    result =  collection_user.find_one_and_update(
+        {"code": code},  # 查询条件
+        {
+            "$set": {"last_login": current_time},  # 更新最后登录时间
+            "$inc": {"login_count": 1}  # 登录次数加 1
+        },
+        upsert=False,  # 不自动插入
+        return_document=ReturnDocument.AFTER
+    )
+
+    if result:
+        # 如果找到并更新了对应的文档
+        return CRUD(status=True, msg='登录成功', data=dumps(result))
+    else:
+        # 如果没有找到对应的文档，插入一条新的记录
+        new_document = {
+            "code": code,
+            "created_at": current_time,
+            "last_login": current_time,
+            "login_count": 1
+        }
+        insert_result =  collection_user.insert_one(new_document)
+        if insert_result.inserted_id:
+            return CRUD(status=True, msg='首次登录成功', data=dumps(new_document))
+
 # 测试接口
 @app.get("/test")
 async def test():
