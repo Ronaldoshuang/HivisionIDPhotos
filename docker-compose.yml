@@ -34,3 +34,19 @@ services:
       - ./docker/mongodb/db:/data/db
       - ./docker/mongodb/log:/data/logs
       - ./docker/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  # 入口nginx网关
+  nginx-gateway:
+    image: "nginx:1.21.6-alpine"
+    volumes:
+      ## 修改nginx网关配置文件default.conf，配置各种转发
+      - ./docker/nginx-gateway/conf/conf.d/:/etc/nginx/conf.d/
+      - ./docker/nginx-gateway/conf/include/:/etc/nginx/include/
+      ## 映射HTTPS证书文件目录
+      - ./docker/nginx-gateway/conf/cert/:/etc/nginx/cert/
+      ## 映射日志文件目录
+      - ./docker/nginx-gateway/logs/:/var/log/nginx/
+    restart: always
+    ports:
+      ## 入口nginx网关监听端口在环境变量中定义（docker-compose.yml同级目录下的.env文件）
+      - 80:80
+      - 443:443
