@@ -308,6 +308,22 @@ async def test():
 
     return result_messgae
 
+# 测试接口
+@app.post("/qtest")
+async def test():
+
+    result_messgae = {
+        "status": "123",
+        "image_base64": "123",
+    }
+
+    # except Exception as e:
+    #     result_messgae = {
+    #         "status": False,
+    #     }
+
+    return result_messgae
+
 if __name__ == "__main__":
     import uvicorn
 

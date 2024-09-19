@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  hivision_idphotos:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: linzeyi/hivision_idphotos
-    command: python3 -u app.py --host 0.0.0.0 --port 7860
-    ports:
-      - '7860:7860'
+#  hivision_idphotos:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    image: linzeyi/hivision_idphotos
+#    command: python3 -u app.py --host 0.0.0.0 --port 7860
+#    ports:
+#      - '7860:7860'
 
   hivision_idphotos_api:
     build:
@@ -18,3 +18,19 @@ services:
     command: python3 deploy_api.py
     ports:
       - '8080:8080'
+
+  db:
+    image: "mongo:4.0.27"
+    #    build: ./docker/mongodb
+    restart: always
+    tty: true
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=zjz_admin
+      - MONGO_INITDB_ROOT_PASSWORD=qs123456..
+      - MONGO_INITDB_DATABASE=zjz
+    volumes:
+      - ./docker/mongodb/db:/data/db
+      - ./docker/mongodb/log:/data/logs
+      - ./docker/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
