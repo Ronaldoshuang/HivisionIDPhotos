@@ -1,5 +1,4 @@
-from fastapi import FastAPI, UploadFile, Form, File
-from fastapi import FastAPI, UploadFile, Form,Query
+from fastapi import FastAPI, UploadFile, Form, File,Query
 from hivision import IDCreator
 from hivision.error import FaceError
 from hivision.creator.layout_calculator import (
@@ -96,17 +95,21 @@ async def idphoto_inference(
         result_message = {"status": False}
     # 如果检测到人脸数量等于1, 则返回标准证和高清照结果（png 4通道图像）
     else:
-        result_image_standard_bytes = save_image_dpi_to_bytes(cv2.cvtColor(result.standard, cv2.COLOR_RGBA2BGRA), None, dpi)
-
-        result_message = {
-            "status": True,
-            "image_base64_standard": bytes_2_base64(result_image_standard_bytes),
-        }
-
         # 如果hd为True, 则增加高清照结果（png 4通道图像）
         if hd:
             result_image_hd_bytes = save_image_dpi_to_bytes(cv2.cvtColor(result.hd, cv2.COLOR_RGBA2BGRA), None, dpi)
-            result_message["image_base64_hd"] = bytes_2_base64(result_image_hd_bytes)
+            result_message = {
+                "status": True,
+                "image_base64": bytes_2_base64(result_image_hd_bytes),
+            }
+        else:
+            result_image_standard_bytes = save_image_dpi_to_bytes(cv2.cvtColor(result.standard, cv2.COLOR_RGBA2BGRA),
+                                                                  None, dpi)
+
+            result_message = {
+                "status": True,
+                "image_base64": bytes_2_base64(result_image_standard_bytes),
+            }
 
     return result_message
 
@@ -367,53 +370,6 @@ async def idphoto_crop_inference(
 
 
 # <!----------------------------------自己写的接口------自己写的接口-----------自己写的接口-------自己写的接口------------------------------->
-
-
-# 透明图像添加纯色背景接口 传递图像是base64格式
-@app.post("/v1/add_background")
-async def v1_photo_add_background(
-    input_image_base64: str = Form(...),
-    color: str = Form(...),
-    kb: str = Form(None),
-    render: int = Form(0),
-):
-    render_choice = ["pure_color", "updown_gradient", "center_gradient"]
-    image_bytes = base64.b64decode(input_image_base64)
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
-
-    color = hex_to_rgb(color)
-    color = (color[2], color[1], color[0])
-
-    result_image = add_background(
-        img,
-        bgr=color,
-        mode=render_choice[render],
-    ).astype(np.uint8)
-
-    if kb:
-        result_image = cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR)
-        result_image_base64 = resize_image_to_kb_base64(result_image, int(kb))
-    else:
-        result_image_base64 = numpy_2_base64(result_image)
-
-    # try:
-    result_messgae = {
-        "status": True,
-        "image_base64": result_image_base64,
-    }
-
-    # except Exception as e:
-    #     print(e)
-    #     result_messgae = {
-    #         "status": False,
-    #         "error": e
-    #     }
-
-    return result_messgae
-
-
-
 @app.get("/photo_size")
 async def test(name: str = Query(default=None, title='证件照名称'),category: int = Query(default=None, title='证件照类型')
                ,recommend: int = Query(default=None, title='是否热门')):
