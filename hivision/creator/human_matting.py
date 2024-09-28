@@ -37,10 +37,9 @@ WEIGHTS = {
     ),
 }
 
-ONNX_DEVICE = (
-    "CUDAExecutionProvider"
-    if onnxruntime.get_device() == "GPU"
-    else "CPUExecutionProvider"
+ONNX_DEVICE = onnxruntime.get_device()
+ONNX_PROVIDER = (
+    "CUDAExecutionProvider" if ONNX_DEVICE == "GPU" else "CPUExecutionProvider"
 )
 
 HIVISION_MODNET_SESS = None
@@ -52,7 +51,7 @@ BIREFNET_V1_LITE_SESS = None
 def load_onnx_model(checkpoint_path, set_cpu=False):
     providers = (
         ["CUDAExecutionProvider", "CPUExecutionProvider"]
-        if ONNX_DEVICE == "CUDAExecutionProvider"
+        if ONNX_PROVIDER == "CUDAExecutionProvider"
         else ["CPUExecutionProvider"]
     )
 
@@ -202,6 +201,7 @@ def get_modnet_matting(input_image, checkpoint_path, ref_size=512):
         print(f"Checkpoint file not found: {checkpoint_path}")
         return None
 
+    # 如果RUN_MODE不是野兽模式，则不加载模型
     if HIVISION_MODNET_SESS is None:
         HIVISION_MODNET_SESS = load_onnx_model(checkpoint_path, set_cpu=True)
 
@@ -217,6 +217,10 @@ def get_modnet_matting(input_image, checkpoint_path, ref_size=512):
     b, g, r = cv2.split(np.uint8(input_image))
 
     output_image = cv2.merge((b, g, r, mask))
+    
+    # 如果RUN_MODE不是野兽模式，则释放模型
+    if os.getenv("RUN_MODE") != "beast":
+        HIVISION_MODNET_SESS = None
 
     return output_image
 
@@ -230,6 +234,7 @@ def get_modnet_matting_photographic_portrait_matting(
         print(f"Checkpoint file not found: {checkpoint_path}")
         return None
 
+    # 如果RUN_MODE不是野兽模式，则不加载模型
     if MODNET_PHOTOGRAPHIC_PORTRAIT_MATTING_SESS is None:
         MODNET_PHOTOGRAPHIC_PORTRAIT_MATTING_SESS = load_onnx_model(
             checkpoint_path, set_cpu=True
@@ -249,6 +254,10 @@ def get_modnet_matting_photographic_portrait_matting(
     b, g, r = cv2.split(np.uint8(input_image))
 
     output_image = cv2.merge((b, g, r, mask))
+    
+    # 如果RUN_MODE不是野兽模式，则释放模型
+    if os.getenv("RUN_MODE") != "beast":
+        MODNET_PHOTOGRAPHIC_PORTRAIT_MATTING_SESS = None
 
     return output_image
 
@@ -298,6 +307,10 @@ def get_rmbg_matting(input_image: np.ndarray, checkpoint_path, ref_size=1024):
     # Paste the mask on the original image
     new_im = Image.new("RGBA", orig_image.size, (0, 0, 0, 0))
     new_im.paste(orig_image, mask=pil_im)
+    
+    # 如果RUN_MODE不是野兽模式，则释放模型
+    if os.getenv("RUN_MODE") != "beast":
+        RMBG_SESS = None
 
     return np.array(new_im)
 
@@ -363,9 +376,20 @@ def get_birefnet_portrait_matting(input_image, checkpoint_path, ref_size=512):
     # 记录加载onnx模型的开始时间
     load_start_time = time()
 
+    # 如果RUN_MODE不是野兽模式，则不加载模型
     if BIREFNET_V1_LITE_SESS is None:
-        print("首次加载birefnet-v1-lite模型...")
-        BIREFNET_V1_LITE_SESS = load_onnx_model(checkpoint_path)
+        # print("首次加载birefnet-v1-lite模型...")
+        if ONNX_DEVICE == "GPU":
+            print("onnxruntime-gpu已安装，尝试使用CUDA加载模型")
+            try:
+                import torch
+            except ImportError:
+                print(
+                    "torch未安装，尝试直接使用onnxruntime-gpu加载模型，这需要配置好CUDA和cuDNN"
+                )
+            BIREFNET_V1_LITE_SESS = load_onnx_model(checkpoint_path)
+        else:
+            BIREFNET_V1_LITE_SESS = load_onnx_model(checkpoint_path, set_cpu=True)
 
     # 记录加载onnx模型的结束时间
     load_end_time = time()
@@ -396,5 +420,9 @@ def get_birefnet_portrait_matting(input_image, checkpoint_path, ref_size=512):
     # Paste the mask on the original image
     new_im = Image.new("RGBA", orig_image.size, (0, 0, 0, 0))
     new_im.paste(orig_image, mask=pil_im)
+    
+    # 如果RUN_MODE不是野兽模式，则释放模型
+    if os.getenv("RUN_MODE") != "beast":
+        BIREFNET_V1_LITE_SESS = None
 
     return np.array(new_im)

@@ -8,7 +8,7 @@ r"""
     证件照调整
 """
 from .context import Context
-from .layout_calculator import generate_layout_photo
+from .layout_calculator import generate_layout_array
 import hivision.creator.utils as U
 import numpy as np
 import math
@@ -17,12 +17,12 @@ import cv2
 
 def adjust_photo(ctx: Context):
     # Step1. 准备人脸参数
-    face_rect = ctx.face
+    face_rect = ctx.face["rectangle"]
     standard_size = ctx.params.size
     params = ctx.params
     x, y = face_rect[0], face_rect[1]
     w, h = face_rect[2], face_rect[3]
-    height, width = ctx.processing_image.shape[:2]
+    height, width = ctx.matting_image.shape[:2]
     width_height_ratio = standard_size[0] / standard_size[1]
     # Step2. 计算高级参数
     face_center = (x + w / 2, y + h / 2)  # 面部中心坐标
@@ -46,7 +46,7 @@ def adjust_photo(ctx: Context):
     x2 = x1 + crop_size[1]
 
     # Step3, 裁剪框的调整
-    cut_image = IDphotos_cut(x1, y1, x2, y2, ctx.processing_image)
+    cut_image = IDphotos_cut(x1, y1, x2, y2, ctx.matting_image)
     cut_image = cv2.resize(cut_image, (crop_size[1], crop_size[0]))
     y_top, y_bottom, x_left, x_right = U.get_box(
         cut_image.astype(np.uint8), model=2, correction_factor=0
@@ -85,7 +85,7 @@ def adjust_photo(ctx: Context):
             y1 + cut_value_top + status_top * move_value,
             x2 - x_right,
             y2 - cut_value_top + status_top * move_value,
-            ctx.processing_image,
+            ctx.matting_image,
         )
 
     # 换装参数准备
@@ -111,7 +111,7 @@ def adjust_photo(ctx: Context):
     }
 
     # Step7. 排版照参数获取
-    typography_arr, typography_rotate = generate_layout_photo(
+    typography_arr, typography_rotate = generate_layout_array(
         input_height=standard_size[0], input_width=standard_size[1]
     )
 
@@ -173,7 +173,6 @@ def IDphotos_cut(x1, y1, x2, y2, img):
         temp_x_2 = temp_x_2 - x2
 
     # 生成一张全透明背景
-    print("crop_size:", crop_size)
     background_bgr = np.full((crop_size[0], crop_size[1]), 255, dtype=np.uint8)
     background_a = np.full((crop_size[0], crop_size[1]), 0, dtype=np.uint8)
     background = cv2.merge(
