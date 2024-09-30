@@ -22,6 +22,7 @@ from database.client import db
 from database.response import CRUD
 from bson.json_util import dumps
 from datetime import datetime
+import pytz  # 导入pytz库以处理时区问题
 from pymongo import ReturnDocument
 from settings import WXURL, APPID, SECRET
 import requests
@@ -411,7 +412,7 @@ async def test(code: str = Query(default=None, title='微信code')):
     result =  collection_user.find_one_and_update(
         {"openid": openid},  # 查询条件
         {
-            "$set": {"last_login": datetime.utcnow()},  # 更新最后登录时间
+            "$set": {"last_login": get_beijing_time()},  # 更新最后登录时间
             "$inc": {"login_count": 1}  # 登录次数加 1
         },
         upsert=False,  # 不自动插入
@@ -425,8 +426,8 @@ async def test(code: str = Query(default=None, title='微信code')):
         # 如果没有找到对应的文档，插入一条新的记录
         new_document = {
             "openid": openid,
-            "created_at": datetime.utcnow(),
-            "last_login": datetime.utcnow(),
+            "created_at": get_beijing_time(),
+            "last_login": get_beijing_time(),
             "login_count": 1
         }
         insert_result =  collection_user.insert_one(new_document)
@@ -455,6 +456,17 @@ async def test():
     }
     return result_messgae
 
+
+def get_beijing_time():
+    """
+    获取当前的北京时间，并返回格式化的字符串。
+    返回:
+        str: 格式为 'YYYY-MM-DD HH:MM:SS' 的北京时间字符串。
+    """
+    beijing_tz = pytz.timezone('Asia/Shanghai')  # 创建北京时间（亚洲/上海）时区对象
+    beijing_time = datetime.now(beijing_tz)  # 获取当前的北京时间
+    formatted_time = beijing_time.strftime('%Y-%m-%d %H:%M:%S')  # 格式化时间
+    return formatted_time  # 返回格式化后的字符串
 
 
 if __name__ == "__main__":
