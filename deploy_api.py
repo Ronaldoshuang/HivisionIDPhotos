@@ -15,6 +15,7 @@ from hivision.utils import (
     add_watermark,
     save_image_dpi_to_bytes,
 )
+import base64
 import numpy as np
 import cv2
 from database.client import db
