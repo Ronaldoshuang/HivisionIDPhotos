@@ -16,6 +16,7 @@
 [![][spaces-shield]][spaces-link]
 [![][swanhub-demo-shield]][swanhub-demo-link]
 [![][modelscope-shield]][modelscope-link]
+[![][modelers-shield]][modelers-link]
 
 [![][trendshift-shield]][trendshift-link]
 [![][hellogithub-shield]][hellogithub-link]
@@ -51,13 +52,13 @@
 
 - 온라인 체험: [![SwanHub Demo](https://img.shields.io/static/v1?label=Demo&message=SwanHub%20Demo&color=blue)](https://swanhub.co/ZeYiLin/HivisionIDPhotos/demo)、[![Spaces](https://img.shields.io/badge/🤗-Open%20in%20Spaces-blue)](https://huggingface.co/spaces/TheEeeeLin/HivisionIDPhotos)、[![][modelscope-shield]][modelscope-link]
 
+- 2024.11.20: Gradio 데모에 **인쇄 레이아웃** 옵션 추가, 6인치, 5인치, A4, 3R, 4R 레이아웃 크기 지원
+- 2024.11.16: API 인터페이스에 뷰티 효과 매개변수 추가
 - 2024.09.24: API 인터페이스에 base64 이미지 입력 옵션 추가 | Gradio 데모에 **레이아웃 사진 자르기 선** 기능 추가
 - 2024.09.22: Gradio Demo에 **버스트 모드** 및 **DPI** 매개변수 추가
 - 2024.09.18: Gradio Demo에 **템플릿 사진 공유** 기능 추가, **미국식** 배경 옵션 추가
 - 2024.09.17: Gradio Demo에 **커스텀 배경색-HEX 입력** 기능 추가 | **(커뮤니티 기여) C++ 버전** - [HivisionIDPhotos-cpp](https://github.com/zjkhahah/HivisionIDPhotos-cpp) 기여 by [zjkhahah](https://github.com/zjkhahah)
 - 2024.09.16: Gradio Demo에 **얼굴 회전 정렬** 기능 추가, 커스텀 사이즈 입력에 **밀리미터** 단위 추가
-- 2024.09.14: Gradio Demo에 **커스텀 DPI** 기능 추가, 일본어와 한국어 추가, **밝기, 대비, 선명도 조절** 기능 추가
-- 2024.09.12: Gradio 데모에 **미백** 기능 추가 | API 인터페이스에 **워터마크 추가**, **사진 KB 크기 설정**, **증명사진 자르기** 추가
 
 <br>
 
@@ -461,3 +462,6 @@ This repository is licensed under the [Apache-2.0 License](LICENSE).
 
 [modelscope-shield]: https://img.shields.io/badge/Demo_on_ModelScope-purple?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIzIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPHBhdGggaWQ9InN2Z18xNCIgZmlsbD0iIzYyNGFmZiIgZD0ibTAsODkuODRsMjUuNjUsMGwwLDI1LjY0OTk5bC0yNS42NSwwbDAsLTI1LjY0OTk5eiIvPgogIDxwYXRoIGlkPSJzdmdfMTUiIGZpbGw9IiM2MjRhZmYiIGQ9Im05OS4xNCwxMTUuNDlsMjUuNjUsMGwwLDI1LjY1bC0yNS42NSwwbDAsLTI1LjY1eiIvPgogIDxwYXRoIGlkPSJzdmdfMTYiIGZpbGw9IiM2MjRhZmYiIGQ9Im0xNzYuMDksMTQxLjE0bC0yNS42NDk5OSwwbDAsMjIuMTlsNDcuODQsMGwwLC00Ny44NGwtMjIuMTksMGwwLDI1LjY1eiIvPgogIDxwYXRoIGlkPSJzdmdfMTciIGZpbGw9IiMzNmNmZDEiIGQ9Im0xMjQuNzksODkuODRsMjUuNjUsMGwwLDI1LjY0OTk5bC0yNS42NSwwbDAsLTI1LjY0OTk5eiIvPgogIDxwYXRoIGlkPSJzdmdfMTgiIGZpbGw9IiMzNmNmZDEiIGQ9Im0wLDY0LjE5bDI1LjY1LDBsMCwyNS42NWwtMjUuNjUsMGwwLC0yNS42NXoiLz4KICA8cGF0aCBpZD0ic3ZnXzE5IiBmaWxsPSIjNjI0YWZmIiBkPSJtMTk4LjI4LDg5Ljg0bDI1LjY0OTk5LDBsMCwyNS42NDk5OWwtMjUuNjQ5OTksMGwwLC0yNS42NDk5OXoiLz4KICA8cGF0aCBpZD0ic3ZnXzIwIiBmaWxsPSIjMzZjZmQxIiBkPSJtMTk4LjI4LDY0LjE5bDI1LjY0OTk5LDBsMCwyNS42NWwtMjUuNjQ5OTksMGwwLC0yNS42NXoiLz4KICA8cGF0aCBpZD0ic3ZnXzIxIiBmaWxsPSIjNjI0YWZmIiBkPSJtMTUwLjQ0LDQybDAsMjIuMTlsMjUuNjQ5OTksMGwwLDI1LjY1bDIyLjE5LDBsMCwtNDcuODRsLTQ3Ljg0LDB6Ii8+CiAgPHBhdGggaWQ9InN2Z18yMiIgZmlsbD0iIzM2Y2ZkMSIgZD0ibTczLjQ5LDg5Ljg0bDI1LjY1LDBsMCwyNS42NDk5OWwtMjUuNjUsMGwwLC0yNS42NDk5OXoiLz4KICA8cGF0aCBpZD0ic3ZnXzIzIiBmaWxsPSIjNjI0YWZmIiBkPSJtNDcuODQsNjQuMTlsMjUuNjUsMGwwLC0yMi4xOWwtNDcuODQsMGwwLDQ3Ljg0bDIyLjE5LDBsMCwtMjUuNjV6Ii8+CiAgPHBhdGggaWQ9InN2Z18yNCIgZmlsbD0iIzYyNGFmZiIgZD0ibTQ3Ljg0LDExNS40OWwtMjIuMTksMGwwLDQ3Ljg0bDQ3Ljg0LDBsMCwtMjIuMTlsLTI1LjY1LDBsMCwtMjUuNjV6Ii8+CiA8L2c+Cjwvc3ZnPg==&labelColor=white
 [modelscope-link]: https://modelscope.cn/studios/SwanLab/HivisionIDPhotos
+
+[modelers-shield]: https://img.shields.io/badge/Demo_on_Modelers-c42a2a?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAxMjQgNjQiIGZpbGw9Im5vbmUiPgo8cGF0aCBkPSJNNDIuNzc4MyAwSDI2LjU5NzdWMTUuNzc4N0g0Mi43NzgzVjBaIiBmaWxsPSIjREUwNDI5Ii8+CjxwYXRoIGQ9Ik0xNi41MDg4IDQuMTc5MkgwLjMyODEyNVYxOS45NTc5SDE2LjUwODhWNC4xNzkyWiIgZmlsbD0iIzI0NDk5QyIvPgo8cGF0aCBkPSJNMTIzLjk1MiA0LjE3OTJIMTA3Ljc3MVYxOS45NTc5SDEyMy45NTJWNC4xNzkyWiIgZmlsbD0iIzI0NDk5QyIvPgo8cGF0aCBkPSJNMTYuNTA4OCA0NS40NjE5SDAuMzI4MTI1VjYxLjI0MDZIMTYuNTA4OFY0NS40NjE5WiIgZmlsbD0iIzI0NDk5QyIvPgo8cGF0aCBkPSJNMTIzLjk1MiA0NS40NjE5SDEwNy43NzFWNjEuMjQwNkgxMjMuOTUyVjQ1LjQ2MTlaIiBmaWxsPSIjMjQ0OTlDIi8+CjxwYXRoIGQ9Ik0zMi43MDggMTUuNzc4OEgxNi41MjczVjMxLjU1NzVIMzIuNzA4VjE1Ljc3ODhaIiBmaWxsPSIjREUwNDI5Ii8+CjxwYXRoIGQ9Ik01Mi44NDg2IDE1Ljc3ODhIMzYuNjY4VjMxLjU1NzVINTIuODQ4NlYxNS43Nzg4WiIgZmlsbD0iI0RFMDQyOSIvPgo8cGF0aCBkPSJNOTcuNzIzNyAwSDgxLjU0M1YxNS43Nzg3SDk3LjcyMzdWMFoiIGZpbGw9IiNERTA0MjkiLz4KPHBhdGggZD0iTTg3LjY1MzQgMTUuNzc4OEg3MS40NzI3VjMxLjU1NzVIODcuNjUzNFYxNS43Nzg4WiIgZmlsbD0iI0RFMDQyOSIvPgo8cGF0aCBkPSJNMTA3Ljc5NCAxNS43Nzg4SDkxLjYxMzNWMzEuNTU3NUgxMDcuNzk0VjE1Ljc3ODhaIiBmaWxsPSIjREUwNDI5Ii8+CjxwYXRoIGQ9Ik0yNC42NzQ4IDMxLjU1NzZIOC40OTQxNFY0Ny4zMzYzSDI0LjY3NDhWMzEuNTU3NloiIGZpbGw9IiNERTA0MjkiLz4KPHBhdGggZD0iTTYwLjg3OTkgMzEuNTU3Nkg0NC42OTkyVjQ3LjMzNjNINjAuODc5OVYzMS41NTc2WiIgZmlsbD0iI0RFMDQyOSIvPgo8cGF0aCBkPSJNNzkuNjIwMSAzMS41NTc2SDYzLjQzOTVWNDcuMzM2M0g3OS42MjAxVjMxLjU1NzZaIiBmaWxsPSIjREUwNDI5Ii8+CjxwYXRoIGQ9Ik0xMTUuODI1IDMxLjU1NzZIOTkuNjQ0NVY0Ny4zMzYzSDExNS44MjVWMzEuNTU3NloiIGZpbGw9IiNERTA0MjkiLz4KPHBhdGggZD0iTTcwLjI1NDkgNDcuMzM1OUg1NC4wNzQyVjYzLjExNDdINzAuMjU0OVY0Ny4zMzU5WiIgZmlsbD0iI0RFMDQyOSIvPgo8L3N2Zz4=&labelColor=white
+[modelers-link]: https://modelers.cn/spaces/SwanLab/HivisionIDPhotos
